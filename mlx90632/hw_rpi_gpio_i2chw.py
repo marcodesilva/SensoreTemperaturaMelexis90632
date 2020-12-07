@@ -67,12 +67,10 @@ class HwRpiI2cHw(HwI2cHalMlx90632):
 
 def main():
     i2c = HwRpiI2cHw()
-    d = i2c.i2c_read (0x3A, 0x4000, 9) # example to read 9 first words...
-    print(struct.unpack(">9h", d[0]))
+    d = i2c.i2c_read (0x3A, 0x4000, 9) # example to read 9 first words...               #Manuale pg.30 i valori letti da RAM sono 9 e vanno da 0x4000 a 0x4008
+    print(struct.unpack(">9h", d[0]))                                                   #unpackage del dato strutturato https://docs.python.org/3/library/struct.html
 
-
-
-    i2c.i2c_write(0x3A, 0x3004, 0x0006)
+    i2c.i2c_write(0x3A, 0x3004, 0x0006)                                                 # Handler.metodo(indirizzo_device, 0x3004, 0x0006)
     i2c.i2c_write(0x3A, 0x3005, 0x0006)
 
 
