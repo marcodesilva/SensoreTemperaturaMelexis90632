@@ -66,7 +66,7 @@ while reading_count < Num_of_readings:
         delta_time = now_time - previous_time
         previous_time = now_time
 
-        print("TA = {:6.2f}  | TO = {:6.2f}  | VddMon = {:6.2f}  -- {}".format (ta, to, dev.read_vddmonitor(), str(delta_time)))
+        print("TA = {:6.2f}  | TO = {:6.2f}  | Vdd = {:6.2f}  -- {}".format (ta, to, dev.read_vddmonitor(), str(delta_time)))
     
         reading_count += 1
 
