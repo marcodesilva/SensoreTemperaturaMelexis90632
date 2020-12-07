@@ -26,11 +26,11 @@ class Mlx90632:
         if hw is None or hw == 'auto':
             hw = "mlx://evb:90632/1"
         if isinstance(hw, str):
-            if hw.startswith("I2C-"):
-                from mlx90632.hw_rpi_gpio_i2chw import HwRpiI2cHw
-                # from hw_rpi_gpio_i2chw import HwRpiI2cHw
-                self.hw = HwRpiI2cHw(hw)
-            if hw.startswith("I2CBB-"):
+            if hw.startswith("I2C-"):                              #startswith() ritorna vero se la stringa comincia con quel valore tra apici 
+                from mlx90632.hw_rpi_gpio_i2chw import HwRpiI2cHw  # Questo è il caso utilizzato da noi
+                # from hw_rpi_gpio_i2chw import HwRpiI2cHw         # from directory.dir import Dir --- dalla cartella mlx90632, scegli il file hw_rpi_gpio_i2chw.py 
+                self.hw = HwRpiI2cHw(hw)                          
+            if hw.startswith("I2CBB-"):                         
                 from mlx90632.hw_rpi_gpio_bitbang import HwRpiGpioBitBang
                 # from hw_rpi_gpio_bitbang import HwRpiGpioBitBang
                 self.hw = HwRpiGpioBitBang(hw)
@@ -38,7 +38,7 @@ class Mlx90632:
                 from mlx90632.hw_ftdi_2232h import HwFtdi2232h
                 # from hw_ftdi_2232h import HwFtdi2232h
                 self.hw = HwFtdi2232h(hw)
-            if hw.startswith("mlx://evb:90632"):
+            if hw.startswith("mlx://evb:90632"):               
                 from mlx90632.hw_usb_evb90632 import HwUsbEvb90632
                 # from hw_usb_evb90632 import HwUsbEvb90632
                 self.hw = HwUsbEvb90632(hw)
@@ -75,7 +75,7 @@ class Mlx90632:
         self.read_calibration_data()
 
 
-    def read_calibration_data(self):
+    def read_calibration_data(self):                                    # parametri di calibrazione del sensore vanno letti dalla EEPROM tutti i parametri di seguito
         trim_version = 0
         dsp_version = 0
         cal_Ea = 74.0
@@ -85,13 +85,13 @@ class Mlx90632:
         cal_Fb = -0.0004
         cal_Gb = 0
         cal_Ka = 0
-
-        w = self.hw.i2c_read (self.i2c_addr, 0x240B)
-        trim_version = w >> 8
+                                                                        # le letture di basso livello verranno fatte attraverso la libreria smbus2, ad esempio  
+        w = self.hw.i2c_read (self.i2c_addr, 0x240B)                    # https://pypi.org/project/smbus2/
+        trim_version = w >> 8                                           # ad esempio il metodo i2c_read fa parte dei metodi standard di smbus2 
         dsp_version = w & 0x0FF
 
-        w = self.hw.i2c_read (self.i2c_addr, 0x2424)
-        EE_cal_Ea = w
+        w = self.hw.i2c_read (self.i2c_addr, 0x2424)                    # per gli indirizzi tenere presente il datasheet melexis a questo link:
+        EE_cal_Ea = w                                                   # https://www.melexis.com/en/documents/documentation/datasheets/datasheet-mlx90632
         w = self.hw.i2c_read (self.i2c_addr, 0x2425)
         EE_cal_Ea += (w * 2**16)
         cal_Ea = EE_cal_Ea * 2**-16
