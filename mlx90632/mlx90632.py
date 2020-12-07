@@ -312,8 +312,8 @@ class Mlx90632:
         return raw_data
 
 
-    def read_measurement_data(self):
-        raw_data = self.hw.i2c_read (self.i2c_addr, 0x4003, 6, 'h')
+    def read_measurement_data(self):                                        # le 6 word da 0x4003 fino a 0x4008 lette in RAM vengono utilizzate nelle formule a pg.30 
+        raw_data = self.hw.i2c_read (self.i2c_addr, 0x4003, 6, 'h')         # a seguire del manuale Melexis
         self.clear_new_data(False)
         self.clear_eoc(False)
         # print (raw_data)
@@ -409,11 +409,11 @@ class Mlx90632:
         self.hw.i2c_write (self.i2c_addr, 0x3FFF, new_status_value)
 
 
-    def set_brownout(self, use_cache=True):
+    def set_brownout(self, use_cache=True):                                 #procedura d'avvio  
         if not use_cache:
             self.read_status()
         new_status_value = self.reg_status | 0x0100
-        self.hw.i2c_write (self.i2c_addr, 0x3FFF, new_status_value)
+        self.hw.i2c_write (self.i2c_addr, 0x3FFF, new_status_value)         #0x3FFF definisce se c'è un dato pronto ad essere letto
 
 
     def write_control_mode(self, mode=CONTINIOUS):
@@ -539,10 +539,11 @@ def main():
 
     # defaults
     max_readings = 10
-
-    # dev = Mlx90632("I2C-1")
+    
+    ############################## va impostato il tipo di hw utilizzato ######################
+    dev = Mlx90632("I2C-1")
     # dev = Mlx90632("ftdi://ftdi:2232/1")
-    dev = Mlx90632("mlx://evb:90632/1")
+    # dev = Mlx90632("mlx://evb:90632/1")
 
     dev.init()
     dev.read_chipid()
